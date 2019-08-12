@@ -1,0 +1,6 @@
+square
+house
+ship
+circle
+octagon
+oval
