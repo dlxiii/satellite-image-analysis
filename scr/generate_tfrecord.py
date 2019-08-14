@@ -1,12 +1,12 @@
-"""
-Usage:
-  # In local folder
-  # Create train data:
-  python generate_tfrecord.py --csv_input=CSGO_images\train_labels.csv --image_dir=CSGO_images\train --output_path=CSGO_images\train.record
-
-  # Create test data:
-  python generate_tfrecord.py --csv_input=CSGO_images\test_labels.csv --image_dir=CSGO_images\test --output_path=CSGO_images\test.record
-"""
+#"""
+#Usage:
+#  # In local folder
+#  # Create train data:
+#  python generate_tfrecord.py --csv_input=CSGO_images\train_labels.csv --image_dir=CSGO_images\train --output_path=CSGO_images\train.record
+#
+#  # Create test data:
+#  python generate_tfrecord.py --csv_input=CSGO_images\test_labels.csv --image_dir=CSGO_images\test --output_path=CSGO_images\test.record
+#"""
 from __future__ import division
 from __future__ import print_function
 from __future__ import absolute_import
@@ -20,23 +20,29 @@ from PIL import Image
 from object_detection.utils import dataset_util
 from collections import namedtuple, OrderedDict
 
-flags = tf.app.flags
-flags.DEFINE_string('csv_input', '', 'Path to the CSV input')
-flags.DEFINE_string('image_dir', '', 'Path to the image directory')
-flags.DEFINE_string('output_path', '', 'Path to output TFRecord')
-FLAGS = flags.FLAGS
+#flags = tf.app.flags
+#flags.DEFINE_string('csv_input', '', 'Path to the CSV input')
+#flags.DEFINE_string('image_dir', '', 'Path to the image directory')
+#flags.DEFINE_string('output_path', '', 'Path to output TFRecord')
+#FLAGS = flags.FLAGS
 
 
 # TO-DO replace this with label map
 def class_text_to_int(row_label):
-    if row_label == 'c':
+    if row_label == 'circle':
         return 1
-    elif row_label == 'ch':
+    elif row_label == 'oval':
         return 2
-    elif row_label == 't':
+    elif row_label == 'square':
         return 3
-    elif row_label == 'th':
+    elif row_label == 'octagon':
         return 4
+    elif row_label == 'ship':
+        return 5
+    elif row_label == 'platform':
+        return 6
+    elif row_label == 'house':
+        return 7
     else:
         None
 
@@ -89,16 +95,25 @@ def create_tf_example(group, path):
 
 
 def main(_):
-    writer = tf.python_io.TFRecordWriter(FLAGS.output_path)
-    path = os.path.join(os.getcwd(), FLAGS.image_dir)
-    examples = pd.read_csv(FLAGS.csv_input)
+    #writer = tf.python_io.TFRecordWriter(FLAGS.output_path)
+    #path = os.path.join(os.getcwd(), FLAGS.image_dir)
+    #examples = pd.read_csv(FLAGS.csv_input)
+#    csv_input = '../data/train_test/train_labels.csv'
+#    image_dir = '../data/train_test/train'
+#    output_path = '../data/train_test/train.record'
+    csv_input = '../data/train_test/test_labels.csv'
+    image_dir = '../data/train_test/test'
+    output_path = '../data/train_test/test.record'    
+    writer = tf.python_io.TFRecordWriter(output_path)
+    path = os.path.join(image_dir)
+    examples = pd.read_csv(csv_input)
     grouped = split(examples, 'filename')
     for group in grouped:
         tf_example = create_tf_example(group, path)
         writer.write(tf_example.SerializeToString())
 
     writer.close()
-    output_path = os.path.join(os.getcwd(), FLAGS.output_path)
+    #output_path = os.path.join(os.getcwd(), FLAGS.output_path)
     print('Successfully created the TFRecords: {}'.format(output_path))
 
 
