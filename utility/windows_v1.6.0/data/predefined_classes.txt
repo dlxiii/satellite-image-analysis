@@ -1,6 +1,7 @@
-square
-house
-ship
+square_solid
+square_bigger
+square_divide
+square_cover
+square_locked
 circle
 octagon
-oval
